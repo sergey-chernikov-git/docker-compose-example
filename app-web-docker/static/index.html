@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Docker Compose App</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #6dd5ed, #2193b0);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .container {
+      background: rgba(255,500,255,0.9);
+      padding: 40px 60px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .info {
+        margin: 20px;
+    }
+    h1 {
+      color: #2193b0;
+      margin-bottom: 24px;
+      font-size: 2.2em;
+    }
+    button {
+      padding: 12px 32px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 8px;
+      background: #2193b0;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #6dd5ed;
+      color: #2193b0;
+    }
+  </style>
+  <script>
+    const API_URL = `http://localhost:8001`;
+    document.addEventListener('DOMContentLoaded', function() {
+      const button = document.getElementById('docker-button');
+      button.addEventListener('click', function() {
+        docker_info = document.getElementById('docker-info')
+        const url = `${API_URL}/api/v1/advices`
+        console.log(url)
+        fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse JSON body
+        })
+        .then(data => {
+          docker_info.innerText = data
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Hello and welcome to the docker compose app</h1>
+    <div class="info" id="docker-info">&nbsp;</div>
+    <button id="docker-button">Docker me</button>
+  </div>
+</body>
+</html>
