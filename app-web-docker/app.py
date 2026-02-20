@@ -6,11 +6,9 @@ from config import Config
 from fastapi import FastAPI, Request
 from routers import advice_router
 from fastapi.templating import Jinja2Templates
-
 from ctx import lifespan
 
-# app = FastAPI(lifespan=lifespan)
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

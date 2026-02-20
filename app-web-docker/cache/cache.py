@@ -1,6 +1,6 @@
 import json
 from abc import ABC, abstractmethod
-from typing import override
+from typing import override, overload
 
 import redis.asyncio as redis
 
@@ -9,7 +9,7 @@ from config import Config
 
 class ACache(ABC):
     @abstractmethod
-    async def add(self, key: object, value: object):
+    async def add(self, key: str, value: object):
         raise NotImplemented()
 
     @abstractmethod
@@ -35,16 +35,16 @@ class RedisCache(ACache):
             socket_timeout=3
         )
 
-    @override
-    async def add(self, key: str, value: str):
-        await self._redis.set(f"{Config.RI_APP_PREFIX}-{key}", value)
-
-    @override
     async def add(self, key: str, value: object):
-        await self._redis.set(f"{Config.RI_APP_PREFIX}-{key}", json.dumps(value))
+        if isinstance(value, dict):
+            await self._redis.set(f"{Config.RI_APP_PREFIX}-{key}", json.dumps(value))
+        elif isinstance(value, str):
+            await self._redis.set(f"{Config.RI_APP_PREFIX}-{key}", value)
+        else:
+            raise NotImplementedError(f"Method add({type(key)}, {type(value)}) is not implemented")
 
     async def get(self, key):
-        return await self._redis.set(f"{Config.RI_APP_PREFIX}-{key}")
+        return await self._redis.get(f"{Config.RI_APP_PREFIX}-{key}")
 
     async def update(self, key, value):
         await self.add(key, value)
