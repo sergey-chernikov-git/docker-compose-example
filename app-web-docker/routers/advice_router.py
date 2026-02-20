@@ -1,4 +1,4 @@
-from random import random
+import random
 
 from fastapi import APIRouter
 
@@ -12,7 +12,8 @@ router = APIRouter(
 
 @router.get("/advices")
 async def get_advices():
-    advice = await redis_cache.get(10)
+    idx = random.randint(0, Config.RI_APP_MAX_START_LOAD)
+    advice = await redis_cache.get(idx)
     if not advice:
         raise Exception("No advice found")
     return advice

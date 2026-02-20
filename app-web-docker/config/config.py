@@ -10,3 +10,5 @@ class Config:
     RI_APP_PORT = int(os.environ.get("RI_APP_PORT", "9001"))
     RI_APP_HOST = os.environ.get("RI_APP_HOST", "localhost")
     RI_APP_PREFIX = os.environ.get("RI_APP_PREFIX", "WEB-DOCKER")
+
+    RI_APP_MAX_START_LOAD = 100 - 1
