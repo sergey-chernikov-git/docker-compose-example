@@ -43,13 +43,12 @@
       color: #2193b0;
     }
   </style>
-  <script>
-    const API_URL = `http://localhost:8001`;
+  <script>    
     document.addEventListener('DOMContentLoaded', function() {
       const button = document.getElementById('docker-button');
       button.addEventListener('click', function() {
         docker_info = document.getElementById('docker-info')
-        const url = `${API_URL}/api/v1/advices`
+        const url = `{{ API_URL }}/api/v1/advices`
         console.log(url)
         fetch(url)
         .then(response => {

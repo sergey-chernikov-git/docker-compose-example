@@ -2,15 +2,15 @@ import uvicorn
 import logging
 
 from starlette.middleware.cors import CORSMiddleware
-
 from config import Config
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from routers import advice_router
-from starlette.responses import FileResponse
+from fastapi.templating import Jinja2Templates
 
 from ctx import lifespan
 
-app = FastAPI(lifespan=lifespan)
+# app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -28,10 +28,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+templates = Jinja2Templates(directory="templates")
+
+
 @app.get("/")
-async def render_static():
+async def render_static(request: Request):
     logger.info(f"User requested {Config.APP_STATIC_INDEX}")
-    return FileResponse(Config.APP_STATIC_INDEX)
+    return templates.TemplateResponse("index.html",
+                                      {"request": request, "APP_URL": f"http://{Config.APP_HOST}:{Config.APP_PORT}"})
 
 
 if __name__ == "__main__":

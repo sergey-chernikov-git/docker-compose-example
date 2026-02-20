@@ -1,4 +1,8 @@
+from random import random
+
 from fastapi import APIRouter
+
+from cache import redis_cache
 from config import Config
 
 router = APIRouter(
@@ -8,4 +12,7 @@ router = APIRouter(
 
 @router.get("/advices")
 async def get_advices():
-    return "It is not your business"
+    advice = await redis_cache.get(10)
+    if not advice:
+        raise Exception("No advice found")
+    return advice

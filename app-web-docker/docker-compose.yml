@@ -3,31 +3,40 @@ services:
     build:
       context: .
     ports:
-      - "8001:8000"
+      - ${APP_PORT}:${APP_PORT}
     environment:
-      APP_PORT: 8000
-#    volumes:
-#      - .data:/opt/app-web-docker/data
+      APP_PORT: ${APP_PORT}
+      RI_APP_PORT: ${RI_APP_PORT}
+      RI_APP_HOST: "reddis"
+    volumes:
+      - app-data:/opt/app-web-docker/data
 
-#  reddis:
-#    image: redis
-#    restart: always
-#    ports:
-#      - "8002:6379"
-#    command: >
-#      redis-server
-#      --maxmemory 2000mb
-#      --maxmemory-policy allkeys-lru
-#      --save 60 1
-#      --save 300 10
-#      --save 900 100
-#      --appendonly yes
-#      --appendfsync everysec
-#      --loglevel warning
-#    volumes:
-#      - redis-data:/data
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "ping"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+  reddis:
+    image: redis
+    restart: always
+    ports:
+      - ${RI_APP_PORT}:${RI_APP_PORT}
+    command: >
+      redis-server
+      --maxmemory 2000mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1
+      --save 300 10
+      --save 900 100
+      --appendonly yes
+      --appendfsync everysec
+      --loglevel warning
+      --port ${RI_APP_PORT}
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  app-data:
+    driver: local
+  redis-data:
+    driver: local
