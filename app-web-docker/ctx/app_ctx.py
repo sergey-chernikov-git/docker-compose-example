@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
     logger.info("Load advices to REDIS...")
     with open("content/advices.txt", "r", encoding="utf-8") as f:
         for idx, line in enumerate(f.readlines()):
-            await redis_cache.add(f"{Config.RI_APP_PREFIX}-{idx}", line)
+            await redis_cache.add(idx line)
     logger.info("== App started ==")
     yield
     logger.info("App exit lifespan")
